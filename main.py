@@ -1,6 +1,8 @@
 from camera import Camera
 from flask import Flask, request
 import base64
+import requests
+import io
 
 app = Flask(__name__)
 
@@ -10,19 +12,18 @@ cam = Camera()
 def capture():
     img = cam.capture()
 
-    data = img.getvalue()         # get data from file (BytesIO)
+#    files = {'image': ( img, 'image/png')}
+    files=[('image',('cpu.png',img.getvalue(),'image/png'))]
 
+    data = img.getvalue()         # get data from file (BytesIO)
     data = base64.b64encode(data) # convert to base64 as bytes
     data = data.decode()          # convert bytes to string
 
-    return(f'<img src="data:image/png;base64,{format(data)}">')
+    payload={}
+    headers = {}
 
-
-    # pylab.savefig(data, format = 'png')
-    # str_equivalent_image = base64.b64encode(data.getvalue()).decode()
-    # img_tag = "<img src='data:image/png;base64," + str_equivalent_image + "'/>"
-
-    # return f"captured : <img>{data}<\img>"
+    response = requests.request("POST", "http://localhost:5001/display", headers=headers, data=payload, files=files)
+    return(f'<img src="data:image/png;base64,{format(data)}"> Response : {response.content}')
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
