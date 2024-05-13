@@ -12,8 +12,7 @@ cam = Camera()
 def capture():
     img = cam.capture()
 
-#    files = {'image': ( img, 'image/png')}
-    files=[('image',('cpu.png',img.getvalue(),'image/png'))]
+    files=[('image',('photo.png',img.getvalue(),'image/png'))]
 
     data = img.getvalue()         # get data from file (BytesIO)
     data = base64.b64encode(data) # convert to base64 as bytes
